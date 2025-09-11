@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.AspNetCore.Http.Features;
+using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -185,6 +186,37 @@ app.MapGet("/date/weekday/{date}", (DateTime date) =>
     var days = new[] { "fri", "sat", "sun", "mon", "tue", "wed", "thurs" };
     return new { dayOftheWeek = days[(byte)date.DayOfWeek] };
 });
+
+List<string> Colors = ["Red", "Green", "Blue", "Yellow"];
+app.MapGet("/colors", () =>
+{
+    return new { ThePrimeColors = Colors };
+});
+app.MapGet("/colors/random", () =>
+{
+    Random rando = new Random();
+    return new { Random = Colors[rando.Next(Colors.Count)] };
+});
+app.MapGet("/colors/search/{letter}", (String letter) =>
+{
+    Random rando = new Random();
+    return new { IsThisYourColor = Colors.Where(find => find.Contains(letter.ToUpper())).ToList() };
+});
+
+app.MapPost("/colors/add/{newColor}", (String newColor) =>
+{
+    var result = Colors.Where(find => find.Contains(newColor)).ToList();
+    if (result.Count > 0)
+    {
+        return new { ThePrimeColors = Colors };
+    }
+    Colors.Add(newColor);
+    return new { ThePrimeColors = Colors };
+});
+
+
+
+
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
