@@ -1,38 +1,29 @@
+using System.Collections.Generic;
 using System.Reflection;
 using ManageApp.model;
+using Microsoft.VisualBasic;
 
-class ToDoService : ToDoItemBase
+class ToDoService
 {
 
-    // ToDoService[] listofTasks;
+    List<Task> listofTasks = new List<Task>();
+
     public ToDoService() : base()
     {
-        // this.title = "";
-        // this.description = "";
-        // // this.completionStatus = false;
-
-    }
-    public ToDoService(string title, string description, bool completionStatus, string priority, DateTime dueDate, string category, ToDoService listofTasks) : base(title, description, completionStatus, priority, dueDate, category)
-    {
-        this.title = title;
-        this.description = description;
-        this.completionStatus = completionStatus;
-        this.priority = priority;
-        this.dueDate = dueDate;
-        this.category = category;
-        this.listofTasks = [];
+        this.listofTasks = new List<Task>();
     }
 
-    public void addItem(ToDoService item)
+
+    public void addItem(Task item)
     {
-        this.listofTasks.Append(item);
+        this.listofTasks.Add(item);
     }
     public void showAllItems(bool onlyTitle)
     {
-
-        foreach (var item in listofTasks)
+        int i = 1;
+        foreach (var item in this.listofTasks)
         {
-            Console.WriteLine(item.title);
+            Console.WriteLine(i + ". " + item.title);
             if (onlyTitle == false)
             {
                 Console.WriteLine(item.description);
@@ -41,21 +32,28 @@ class ToDoService : ToDoItemBase
                 Console.WriteLine(item.dueDate);
                 Console.WriteLine(item.category);
             }
+            i++;
         }
     }
     public void markComplete(int index, bool complete)
     {
         this.listofTasks[index].completionStatus = complete;
     }
-    public string showToDo()
-    {
-        return $@"
-        Title: {this.title}
-        description: {this.description}
-        completed: {(this.completionStatus ? "Finished" : "Unfinished")}
 
-        ";
+    public void removeTask(int index)
+    {
+        this.listofTasks.RemoveAt(index - 1);
+        // this.listofTasks[index].completionStatus = complete;
     }
+    // public string showToDo()
+    // {
+    //     return $@"
+    //     Title: {this.title}
+    //     description: {this.description}
+    //     completed: {(this.completionStatus ? "Finished" : "Unfinished")}
+
+    //     ";
+    // }
 
 
 }
