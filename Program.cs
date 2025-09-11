@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.AspNetCore.Http.Features;
 using System.Linq;
 using Microsoft.OpenApi.Writers;
+using System.Text.RegularExpressions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -367,6 +368,103 @@ app.MapGet("/password/strength/{password}", (string password) =>
         return "weak";
     }
 });
+
+// ****************************************************************************************
+
+app.MapGet("/validate/email/{email}", (string email) =>
+{
+    var regex = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+
+    bool isvaild = Regex.IsMatch(email, regex);
+
+    return isvaild ? "Vaild" : "Unvalid";
+
+});
+
+app.MapGet("/validate/phone/{phone}", (string phone) =>
+{
+    var regex = @"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$";
+    bool isvaild = Regex.IsMatch(phone, regex);
+    return isvaild ? "Vaild" : "Unvalid";
+});
+
+app.MapGet("/validate/creditcard/{number}", (string creditcard) =>
+{
+    var regex = @"^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$";
+    bool isvaild = Regex.IsMatch(creditcard, regex);
+    return isvaild ? "Vaild" : "Unvalid";
+});
+
+app.MapGet("/validate/strongpassword/{password}", (string creditcard) =>
+{
+    var regex = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$";
+    bool isvaild = Regex.IsMatch(creditcard, regex);
+    return isvaild ? "Strong" : "Unvalid";
+});
+// ********************************************************************************************************
+app.MapGet("/convert/length/{value}/{fromUnit}/{toUnit}", (int value, string fromUnit, string toUnit) =>
+{
+    var converstionDictionary = new Dictionary<(string unit1, string unit2), Func<float, float>>()
+    {
+        {("Meter","Feet"), x => 3.281f * x},
+        {("Meter","Inches"), x => 39.37f * x},
+        {("Meter","Meter"), x => x},
+
+        {("Feet","Meter"), x => x /3.281f },
+        {("Feet","Inches"), x => x * 12},
+        {("Feet","Feet"), x => x },
+
+        {("Inches","Meter"), x => x /39.37f},
+        {("Inches","Feet"), x => x /12f},
+        {("Inches","Inches"), x => x},
+    };
+
+    var newValue = converstionDictionary[(fromUnit, toUnit)](value);
+    return $"{value}{fromUnit} are {newValue}{toUnit}";
+});
+
+app.MapGet("/convert/weight/{value}/{fromUnit}/{toUnit}", (int value, string fromUnit, string toUnit) =>
+{
+    var converstionDictionary = new Dictionary<(string unit1, string unit2), Func<float, float>>()
+    {
+        {("kg","lbs"), x =>  2.205f * x},
+        {("kg","oz"), x => 35.274f * x},
+        {("kg","kg"), x => x},
+
+        {("lbs","oz"), x => x *16f },
+        {("lbs","kg"), x => x /2.205f},
+        {("lbs","lbs"), x => x },
+
+        {("oz","lbs"), x => x * 16},
+        {("oz","kg"), x => x /35.274f},
+        {("oz","oz"), x => x},
+    };
+
+    var newValue = converstionDictionary[(fromUnit, toUnit)](value);
+    return $"{value}{fromUnit} are {newValue}{toUnit}";
+});
+
+app.MapGet("/convert/volume/{value}/{fromUnit}/{toUnit}", (int value, string fromUnit, string toUnit) =>
+{
+    var converstionDictionary = new Dictionary<(string unit1, string unit2), Func<float, float>>()
+    {
+        {("L","g"), x => x / 3.785f},
+        {("L","c"), x => x * 4.227f},
+        {("L","L"), x => x},
+
+        {("g","c"), x => x * 16f },
+        {("g","L"), x => x * 3.785f},
+        {("g","g"), x => x },
+
+        {("c","g"), x => x /16},
+        {("c","L"), x => x /4.227f},
+        {("c","c"), x => x},
+    };
+
+    var newValue = converstionDictionary[(fromUnit, toUnit)](value);
+    return $"{value}{fromUnit} are {newValue}{toUnit}";
+});
+
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
