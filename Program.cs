@@ -214,7 +214,84 @@ app.MapPost("/colors/add/{newColor}", (String newColor) =>
     return new { ThePrimeColors = Colors };
 });
 
+// *******************************************************************************************************
+static float C2F(float temp)
+{
+    float tempretureF = temp * (9f / 5f) + 32;
+    return tempretureF;
+}
 
+static float C2K(float temp)
+{
+    float tempretureK = temp + 273.15f;
+    return tempretureK;
+}
+static float F2C(float temp)
+{
+    float tempretureC = (temp - 32f) * (5f / 9f);
+    return tempretureC;
+}
+static float F2K(float temp)
+{
+    float tempretureC = temp + 273.15f;
+    return tempretureC;
+}
+static float K2F(float temp)
+{
+    float tempretureF = (temp - 273.15f) * (9f / 5f) + 32;
+    return tempretureF;
+}
+static float K2C(float temp)
+{
+    float tempretureC = temp - 273.15f;
+    return tempretureC;
+}
+
+app.MapGet("/temp/celsius-to-fahrenheit/{temp}", (float temp) =>
+{
+    float tempretureF = temp * (9f / 5f) + 32;
+    return new { Infahrenheit = tempretureF };
+});
+
+app.MapGet("/temp/fahrenheit-to-celsius/{temp}", (float temp) =>
+{
+    float tempretureC = (temp - 32f) * (5f / 9f);
+    return new { InCelsius = tempretureC };
+});
+
+app.MapGet("/temp/kelvin-to-celsius/{temp}", (float temp) =>
+{
+    float tempretureC = temp - 273.15f;
+    return new { InCelsius = tempretureC };
+});
+
+app.MapGet("/temp/celsius-to-kelvin/{temp}", (float temp) =>
+{
+    float tempretureC = temp + 273.15f;
+    return new { Inkelvin = tempretureC };
+});
+
+app.MapGet("/temp/compare/{temp1}/{unit1}/{temp2}/{unit2}", (float temp1, string unit1, float temp2, string unit2) =>
+{
+
+    var converstionDictionary = new Dictionary<(string unit1, string unit2), Func<float, float>>()
+    {
+        {("C","K"), x => C2K(x)},
+        {("C","F"), x => C2F(x)},
+        {("C","C"), x => x},
+
+        {("F","K"), x => F2K(x)},
+        {("F","F"), x => x},
+        {("F","C"), x => F2C(x)},
+
+        {("K","K"), x => x },
+        {("K","F"), x => K2F(x)},
+        {("K","C"), x => K2C(x)},
+
+    };
+    var tempOne = converstionDictionary[(unit1, unit2)](temp1);
+    return $"{temp1} degrees {unit1} is {tempOne} in {unit2} \n the difference between {unit2} in {unit2} is {tempOne - temp2} ";
+});
 
 
 app.Run();
