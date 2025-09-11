@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.AspNetCore.Http.Features;
 using System.Linq;
+using Microsoft.OpenApi.Writers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -294,6 +295,78 @@ app.MapGet("/temp/compare/{temp1}/{unit1}/{temp2}/{unit2}", (float temp1, string
 });
 
 
+// ************************************************************************************************************************************
+
+app.MapGet("/password/simple/{length}", (int length) =>
+{
+    string letters = "thequickbrownfoxjumpsoverthelazydog";
+    StringBuilder BuildPassword = new StringBuilder();
+    for (int i = 0; i < length; i++)
+    {
+        Random rando = new Random();
+        BuildPassword.Append(letters[rando.Next(letters.Length - 1)]);
+        // BuildPassword += letters[rando.Next(length-1)]
+    }
+    return BuildPassword.ToString();
+});
+
+
+app.MapGet("/password/complex/{length}", (int length) =>
+{
+    string letters = "thequickbrownfoxjumpsoverthelazydog!@#$%^&*()+=-_<>,.?/';:{}[`~]";
+    StringBuilder BuildPassword = new StringBuilder();
+    for (int i = 0; i < length; i++)
+    {
+        Random rando = new Random();
+        BuildPassword.Append(letters[rando.Next(letters.Length - 1)]);
+        // BuildPassword += letters[rando.Next(length-1)]
+    }
+    return BuildPassword.ToString();
+});
+
+
+app.MapGet("/password/memorable/{length}", (int length) =>
+{
+    string wordsUnparsed = "The interrogatory which inaugurated this particular interlocution presupposes the existence of an erudite but languorous subclass of Quora participants who are prepared to eschew the customary virtues of transparency and comprehensibility by abandoning the apothegmatic and the laconic and choosing instead a wilfully perverse course of superfluous prolixity, unwarranted circumlocution (not to mention the intrusive parenthetical intercalation of tangential ephemera) and pernicious obfuscation in order to achieve a result whereby the transmission of semantic content is fatally subordinated to an egregious, vulgar, literary braggadocio in which the superficial and ephemeral grandiloquence of an unfettered and intemperate vocabulary coruscates inconsequentially to the detriment of interpersonal communication, pedagogy or empathetic rapprochement";
+    var parsed = wordsUnparsed.Split(" ");
+    StringBuilder BuildPassword = new StringBuilder();
+    for (int i = 0; i < length; i++)
+    {
+        Random rando = new Random();
+        BuildPassword.Append(parsed[rando.Next(parsed.Length - 1)]);
+        // BuildPassword += letters[rando.Next(length-1)]
+    }
+    return BuildPassword.ToString();
+});
+
+
+app.MapGet("/password/strength/{password}", (string password) =>
+{
+    var specialCharCount = 0;
+    for (int i = 0; i < password.Length; i++)
+    {
+        if ("!@#$%^&*()-+=<>,./?':;[]{|/}".Contains(password))
+        {
+            specialCharCount++;
+        }
+    }
+    if (password.Length < 6)
+    {
+        return "weak";
+    }
+    if (specialCharCount > 4 && password.Length > 8)
+    {
+        return "strong";
+    }
+    if (password.Length > 15)
+    {
+        return "strong";
+    }
+    else
+    {
+        return "weak";
+    }
+});
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
