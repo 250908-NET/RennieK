@@ -235,8 +235,8 @@ static float F2C(float temp)
 }
 static float F2K(float temp)
 {
-    float tempretureC = temp + 273.15f;
-    return tempretureC;
+    float tempretureK = (temp - 32f) * (5f / 9f) + 273.15f;
+    return tempretureK;
 }
 static float K2F(float temp)
 {
@@ -292,7 +292,7 @@ app.MapGet("/temp/compare/{temp1}/{unit1}/{temp2}/{unit2}", (float temp1, string
 
     };
     var tempOne = converstionDictionary[(unit1, unit2)](temp1);
-    return $"{temp1} degrees {unit1} is {tempOne} in {unit2} \n the difference between {unit2} in {unit2} is {tempOne - temp2} ";
+    return $"{temp1}{unit1} = {tempOne}{unit2} \n  \nthe difference between {temp1}{unit1} and  {temp2}{unit2} is {tempOne - temp2}{unit2}";
 });
 
 
