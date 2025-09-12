@@ -464,6 +464,35 @@ app.MapGet("/convert/volume/{value}/{fromUnit}/{toUnit}", (int value, string fro
     var newValue = converstionDictionary[(fromUnit, toUnit)](value);
     return $"{value}{fromUnit} are {newValue}{toUnit}";
 });
+// *******************************************************************************************************************
+List<string> forcast = ["1. sunny", "2. partly clouldy", "3. sunny", "4. rain", "5. sleet", "6. hail"];
+List<string> saved = new List<string>();
+app.MapGet("/weather/forcast", () =>
+{
+    return forcast;
+});
+
+app.MapPost("/weather/forcast/{save}", (int save) =>
+{
+    if (save > 0 && save < 7)
+    {
+        saved.Add(forcast[save - 1]);
+        return forcast[save - 1];
+    }
+    return "";
+});
+app.MapGet("/weather/forcast/saved", () =>
+{
+
+    return saved;
+});
+
+app.MapDelete("/weather/forcast/{save}", (int save) =>
+{
+    saved.RemoveAt(save - 1);
+    return saved;
+});
+// ***************************************************************************************************************************
 
 app.Run();
 
