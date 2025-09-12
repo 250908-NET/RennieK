@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http.Features;
 using System.Linq;
 using Microsoft.OpenApi.Writers;
 using System.Text.RegularExpressions;
+using models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -465,26 +466,27 @@ app.MapGet("/convert/volume/{value}/{fromUnit}/{toUnit}", (int value, string fro
     return $"{value}{fromUnit} are {newValue}{toUnit}";
 });
 // *******************************************************************************************************************
-List<string> forcast = ["1. sunny", "2. partly clouldy", "3. sunny", "4. rain", "5. sleet", "6. hail"];
+List<string> possibleWeather = ["sunny", "partly clouldy", "rain", "sleet", "hail", "snow"];
+
 List<string> saved = new List<string>();
+WeatherService PersistentWeather = new WeatherService();
 app.MapGet("/weather/forcast", () =>
 {
-    return forcast;
+    return PersistentWeather.showForcast();
 });
 
-app.MapPost("/weather/forcast/{save}", (int save) =>
+app.MapPost("/weather/forcast/save/{save}", (string save) =>
 {
-    if (save > 0 && save < 7)
-    {
-        saved.Add(forcast[save - 1]);
-        return forcast[save - 1];
-    }
-    return "";
+    Forcast thatday = PersistentWeather.weatherForWeek.FirstOrDefault(forcast => forcast.dayOftheWeek == save);
+    PersistentWeather.saveForcast(thatday);
+
+    return thatday;
+    // return "dayName";
 });
 app.MapGet("/weather/forcast/saved", () =>
 {
 
-    return saved;
+    return PersistentWeather.savedForcast;
 });
 
 app.MapDelete("/weather/forcast/{save}", (int save) =>
