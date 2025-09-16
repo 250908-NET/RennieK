@@ -5,6 +5,7 @@ using TaskAPI.models.NoteTask;
 
 class NoteService : INoteService
 {
+    // need to be updated from Json file
     public List<NoteTask> noteBook = new List<NoteTask>();
 
     public NoteService()
