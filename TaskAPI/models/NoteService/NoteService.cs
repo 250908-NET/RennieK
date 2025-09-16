@@ -17,17 +17,56 @@ class NoteService : INoteService
         return noteBook;
     }
 
-    public List<NoteTask> getAllNotesOnFilter(bool isCompleted = false, string priority = "")
+    public List<NoteTask> getAllNotesOnFilter(bool? isCompleted = false, string? priority = "")
     {
-        List<NoteTask> filter = noteBook.FindAll(Note =>
+
+        if (isCompleted != null && priority == null)
         {
-            if (Note.isCompleted == isCompleted || Note.priority == priority)
+            List<NoteTask> filter = noteBook.FindAll(Note =>
             {
-                return true;
-            }
-            return false;
-        });
-        return filter;
+                if (Note.isCompleted == isCompleted)
+                {
+                    return true;
+                }
+                return false;
+            });
+
+            return filter;
+        }
+        if (isCompleted == null && priority != null)
+        {
+            List<NoteTask> filter = noteBook.FindAll(Note =>
+                       {
+                           if (Note.priority == priority)
+                           {
+                               return true;
+                           }
+                           return false;
+                       });
+
+            return filter;
+        }
+
+        if (isCompleted == null && priority == null)
+        {
+            return getAllNoteTasks();
+
+        }
+        if (isCompleted != null && priority != null)
+        {
+            List<NoteTask> filter = noteBook.FindAll(Note =>
+            {
+                if (Note.isCompleted == isCompleted || Note.priority == priority)
+                {
+                    return true;
+                }
+                return false;
+            });
+
+            return filter;
+        }
+
+        return getAllNoteTasks();
     }
 
     public NoteTask addTask(NoteTask newItem)
@@ -43,16 +82,17 @@ class NoteService : INoteService
             throw;
         }
     }
-    public void removeTaskById(int id)
+    public bool removeTaskById(int id)
     {
         try
         {
             NoteTask objToRemove = noteBook.Find(objects => objects.id == id);
             if (objToRemove == null)
             {
-                return;
+                return false;
             }
             noteBook.Remove(objToRemove);
+            return true;
         }
         catch (System.Exception)
         {
@@ -119,4 +159,9 @@ class NoteService : INoteService
         }
         return "";
     }
+
+    // internal object getAllNotesOnFilter(bool? isCompleted, string priority)
+    // {
+    //     throw new NotImplementedException();
+    // }
 }

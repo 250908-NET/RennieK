@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using TaskAPI.models.NoteTask;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,25 +21,21 @@ app.UseHttpsRedirection();
 NoteService service = new NoteService();
 
 
-app.MapGet("/api/tasks", () =>
+// app.MapGet("/api/tasks/", () =>
+// {
+//     return service.getAllNoteTasks();
+// });
+app.MapGet("/api/tasks", (bool? isCompleted, string? priority) =>
 {
-    return service.getAllNoteTasks();
+    // List<NoteTask> filter = service.getAllNotesOnFilter(isCompleted, priority);
+    // if (filter.Count == 0)
+    // {
+    //     return Results.NoContent();
+    // }
+    return service.getAllNotesOnFilter(isCompleted, priority);
+
 });
-app.MapGet("/api/tasks/filter/{filter}", (string filter) =>
-{
-    switch (filter)
-    {
-        case "isCompleted":
-            return service.getAllNotesOnFilter(true);
-        case "low":
-            return service.getAllNotesOnFilter(false, "low");
-        case "high":
-            return service.getAllNotesOnFilter(false, "high");
-        case "isNotCompleted":
-            return service.getAllNotesOnFilter(false);
-    }
-    return service.getAllNoteTasks();
-});
+
 app.MapGet("/api/tasks/{id}", (int id) =>
 {
     // NoteService service = new NoteService();
@@ -45,8 +43,23 @@ app.MapGet("/api/tasks/{id}", (int id) =>
 
     // service.addTask(test);
     // return "ok";
+    NoteTask retrivedNoteTask = service.getTaskByID(id);
+    if (retrivedNoteTask == null)
+    {
+        return Results.NotFound(new
+        {
+            success = false,
+            data = "empty",
+            message = $"Item id:{id} Not found"
+        });
+    }
 
-    return service.getTaskByID(id);
+    return Results.Ok(new
+    {
+        success = true,
+        data = retrivedNoteTask,
+        message = $"Item id:{retrivedNoteTask.id} found"
+    });
 
 });
 
@@ -55,26 +68,70 @@ app.MapPost("/api/tasks", (TaskBody todo) =>
     // NoteService service = new NoteService();
     NoteTask newCreatedTask = new NoteTask(todo.title, todo.description, todo.isCompleted, todo.priority, todo.dueDate);
 
+    if (todo.title == "")
+    {
+        return Results.BadRequest(new
+        {
+            success = false,
+            data = "empty",
+            message = $"invalid Title"
+        });
+    }
     service.addTask(newCreatedTask);
 
-    return service.noteBook;
+    return Results.Created("/api/tasks", new
+    {
+        success = true,
+        data = service.noteBook,
+        message = $"Item id:{newCreatedTask.id} created"
+    });
 });
 
 app.MapPut("/api/tasks/{id}", (int id, TaskBody todo) =>
 {
+
     NoteTask noteEdit = service.getTaskByID(id);
+    if (noteEdit == null)
+    {
+        return Results.NotFound(new
+        {
+            success = true,
+            data = "",
+            message = $"Item id:{id} not found"
+        });
+    }
     noteEdit.title = todo.title;
     noteEdit.description = todo.description;
     noteEdit.isCompleted = todo.isCompleted;
     noteEdit.dueDate = todo.dueDate;
 
-    return service.updatetask(noteEdit);
+    return Results.Created("/api/tasks/{id}", new
+    {
+        success = true,
+        data = service.updatetask(noteEdit),
+        message = $"Item id:{id} updated"
+    });
 });
 
 app.MapDelete("/api/tasks/{id}", (int id) =>
 {
-    service.removeTaskById(id);
-    return "removed";
+
+    if (service.removeTaskById(id) == false)
+    {
+        return Results.NotFound(new
+        {
+            success = false,
+            data = "NotFound",
+            message = "Can not find object withthat id"
+        }
+        );
+    }
+    return Results.Ok(new
+    {
+        success = true,
+        data = "",
+        message = $"Item id:{id} deleted"
+    });
 });
 
 
