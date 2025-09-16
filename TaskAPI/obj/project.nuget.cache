@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/KlWyNz6bIg=",
+  "dgSpecHash": "nbGWQJtNtxY=",
   "success": true,
-  "projectFilePath": "C:\\Users\\dellm\\RevatureClass\\TaskManagementAPI\\TaskAPI\\TaskAPI.csproj",
+  "projectFilePath": "C:\\Users\\dellm\\RevatureClass\\Class1\\TaskAPI\\TaskAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\dellm\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.8\\microsoft.aspnetcore.openapi.9.0.8.nupkg.sha512",
     "C:\\Users\\dellm\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"

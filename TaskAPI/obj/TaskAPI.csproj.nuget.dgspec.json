@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\dellm\\RevatureClass\\TaskManagementAPI\\TaskAPI\\TaskAPI.csproj": {}
+    "C:\\Users\\dellm\\RevatureClass\\Class1\\TaskAPI\\TaskAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\dellm\\RevatureClass\\TaskManagementAPI\\TaskAPI\\TaskAPI.csproj": {
+    "C:\\Users\\dellm\\RevatureClass\\Class1\\TaskAPI\\TaskAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dellm\\RevatureClass\\TaskManagementAPI\\TaskAPI\\TaskAPI.csproj",
+        "projectUniqueName": "C:\\Users\\dellm\\RevatureClass\\Class1\\TaskAPI\\TaskAPI.csproj",
         "projectName": "TaskAPI",
-        "projectPath": "C:\\Users\\dellm\\RevatureClass\\TaskManagementAPI\\TaskAPI\\TaskAPI.csproj",
+        "projectPath": "C:\\Users\\dellm\\RevatureClass\\Class1\\TaskAPI\\TaskAPI.csproj",
         "packagesPath": "C:\\Users\\dellm\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dellm\\RevatureClass\\TaskManagementAPI\\TaskAPI\\obj\\",
+        "outputPath": "C:\\Users\\dellm\\RevatureClass\\Class1\\TaskAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\dellm\\AppData\\Roaming\\NuGet\\NuGet.Config"
