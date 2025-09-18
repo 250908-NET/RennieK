@@ -14,12 +14,14 @@ abstract class UserBase
         this.username = "";
         this.email = "";
         this.password = "";
+        Book = new NoteService();
     }
     public UserBase(string username, string email, string password)
     {
         this.username = username;
         this.email = email;
         this.password = password;
+        Book = new NoteService();
     }
 
 }
