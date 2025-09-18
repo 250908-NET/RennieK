@@ -7,34 +7,42 @@ class UserService : IUserService
     User CurrentUser { get; set; }
     // UserService UserControl { get; set; }
 
-    List<User> UserDatebase { get; set; }
+    public List<User> UserDatabase { get; set; }
 
+    public UserService()
+    {
+        this.UserDatabase = new List<User>();
+    }
 
-
-    public User createUser(string username, string password, string email)
+    public List<User> GetAllUser()
+    {
+        return UserDatabase;
+    }
+    public User createUser(string username, string email, string password)
     {
         User newUser = new User(username, password, email);
+        UserDatabase.Add(newUser);
         return newUser;
     }
 
     public User? findUserById(int id)
     {
-        User? filter = UserDatebase.Find(user => user.id == id);
+        User? filter = UserDatabase.Find(user => user.id == id);
         if (filter == null) { return null; }
         return filter;
 
     }
     public void removeUser(int id)
     {
-        User? filter = UserDatebase.Find(user => user.id == id);
+        User? filter = UserDatabase.Find(user => user.id == id);
 
         if (filter == null) { return; }
-        UserDatebase.Remove(filter);
+        UserDatabase.Remove(filter);
     }
 
     public User? editUser(UserBody changedUser, int id)
     {
-        User? filter = UserDatebase.Find(user => user.id == id);
+        User? filter = UserDatabase.Find(user => user.id == id);
         if (filter != null)
         {
             filter.email = changedUser.email != "" ? changedUser.email : filter.email;
@@ -50,13 +58,16 @@ class UserService : IUserService
     // if we find a User, we run UserControl
     public User? login(string username, string password)
     {
-        User? filter = UserDatebase.Find(user => user.username == username);
+        User? filter = UserDatabase.Find(user => user.username == username);
 
-        if (filter != null && filter.password == password)
+        if (filter == null)
         {
-
-            return filter;
+            return null;
         }
-        return null;
+        if (filter.password != password)
+        {
+            return null;
+        }
+        return filter;
     }
 }
