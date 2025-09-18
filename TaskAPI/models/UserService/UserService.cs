@@ -6,12 +6,13 @@ class UserService : IUserService
 {
     User CurrentUser { get; set; }
     // UserService UserControl { get; set; }
-
+    int numberOfUsers;
     public List<User> UserDatabase { get; set; }
 
     public UserService()
     {
         this.UserDatabase = new List<User>();
+        numberOfUsers = 0;
     }
 
     public List<User> GetAllUser()
@@ -21,6 +22,8 @@ class UserService : IUserService
     public User createUser(string username, string email, string password)
     {
         User newUser = new User(username, password, email);
+        newUser.id = numberOfUsers;
+        numberOfUsers++;
         UserDatabase.Add(newUser);
         return newUser;
     }
