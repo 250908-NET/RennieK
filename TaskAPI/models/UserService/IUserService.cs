@@ -4,7 +4,7 @@ interface IUserService
 {
     // User CurrentUser { get; set; }
     // UserService UserControl { get; set; }
-
+    public List<User> GetAllUsers();
     public User createUser(string username, string password, string email);
 
     public User? findUserById(int id);

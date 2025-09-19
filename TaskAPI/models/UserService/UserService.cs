@@ -15,7 +15,7 @@ class UserService : IUserService
         numberOfUsers = 0;
     }
 
-    public List<User> GetAllUser()
+    public List<User> GetAllUsers()
     {
         return UserDatabase;
     }

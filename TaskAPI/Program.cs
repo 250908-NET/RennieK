@@ -278,6 +278,18 @@ app.MapDelete("/api/tasks/{id}", [Microsoft.AspNetCore.Authorization.Authorize] 
         message = $"Bad Request"
     });
 });
+// ***********************************************************************************************************************************************************
+
+
+app.MapGet("/api/Account", () =>
+{
+    var allUsers = Uservice.GetAllUsers();
+    return new { success = true, date = allUsers };
+
+});
+
+
+
 
 app.MapPost("/api/createNewAccount", (UserBody loginAttempt, HttpResponse response) =>
 {
@@ -337,9 +349,25 @@ app.MapPost("/api/login", (UserBody loginAttempt, HttpResponse res) =>
     return Results.Ok(new { success = false, data = new { UserEmail = loginAttempt.email, Username = loginAttempt.username }, message = $" Wrong Username or Password: {loginAttempt.username}" });
 });
 
-app.MapGet("/secure", [Microsoft.AspNetCore.Authorization.Authorize] () =>
-    $"You are authorized! {Uservice.UserDatabase}"
-);
+app.MapPost("/api/logout", [Microsoft.AspNetCore.Authorization.Authorize] (HttpResponse res, HttpRequest req) =>
+{
+    if (req.Cookies.TryGetValue("access_token", out var tokenString))
+    {
+        if (userDictionary.TryGetValue(tokenString, out int Userid))
+        {
+            res.Cookies.Delete("access_token");
+            userDictionary.Remove(tokenString);
+            return Results.Ok(new { success = true, message = "you are logged out" });
+        }
+    }
+    return Results.Ok(new { success = false, message = "bad request" });
+});
+
+
+
+// app.MapGet("/secure", [Microsoft.AspNetCore.Authorization.Authorize] () =>
+//     $"You are authorized! {Uservice.UserDatabase}"
+// );
 
 app.Run();
 
