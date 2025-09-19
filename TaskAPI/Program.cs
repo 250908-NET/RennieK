@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+using System.Text.RegularExpressions;
 
 var builder = WebApplication.CreateBuilder(args);
 var key = Encoding.ASCII.GetBytes("123ABC!gybuctgfvhbjkldfgvhbjnkmhjkghjk");
@@ -25,7 +26,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         {
             if (context.Request.Cookies.ContainsKey("access_token"))
             {
-                Console.WriteLine("Token from cookie: " + context.Request.Cookies["access_token"]);
+                // Console.WriteLine("Token from cookie: " + context.Request.Cookies["access_token"]);
                 context.Token = context.Request.Cookies["access_token"];
             }
             return Task.CompletedTask;
@@ -56,7 +57,7 @@ Dictionary<string, int> userDictionary = new Dictionary<string, int>();
 // {
 //     return service.getAllNoteTasks();
 // });
-app.MapGet("/api/tasks", [Microsoft.AspNetCore.Authorization.Authorize] (bool? isCompleted, string? priority, HttpRequest req) =>
+app.MapGet("/api/tasks", [Microsoft.AspNetCore.Authorization.Authorize] (HttpRequest req) =>
 {
     if (req.Cookies.TryGetValue("access_token", out var tokenString))
     {
@@ -67,9 +68,10 @@ app.MapGet("/api/tasks", [Microsoft.AspNetCore.Authorization.Authorize] (bool? i
             if (userObj != null)
             {
                 List<NoteTask> filteredNoteTask = userObj.Book.noteBook;
+                // List<NoteTask> filteredNoteTask = userObj.Book.getAllNotesOnFilter(options.isCompleted, options.priority);
                 if (filteredNoteTask.Count == 0)
                 {
-                    return Results.NotFound(new { success = false, data = "empty", message = $"No COntent found by." });
+                    return Results.Ok(new { success = true, data = "empty", message = $"No COntent found by." });
                 }
                 return Results.Created("/api/tasks", new
                 {
@@ -293,6 +295,19 @@ app.MapGet("/api/Account", () =>
 
 app.MapPost("/api/createNewAccount", (UserBody loginAttempt, HttpResponse response) =>
 {
+    var regex = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+
+    bool isValidEmail = Regex.IsMatch(loginAttempt.email, regex);
+    if (!isValidEmail)
+    {
+        return Results.Ok(new { success = false, message = "Invalid email address" });
+    }
+    User? existUsername = Uservice.UserDatabase.Find(user => user.email == loginAttempt.email);
+
+    if (existUsername != null)
+    {
+        return Results.Ok(new { success = false, message = "use another email" });
+    }
 
     User createdUser = Uservice.createUser(loginAttempt.username, loginAttempt.password, loginAttempt.email);
 

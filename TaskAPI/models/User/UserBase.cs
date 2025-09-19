@@ -1,10 +1,14 @@
 
 
+using System.Text.Json.Serialization;
+
 abstract class UserBase
 {
     public int id { get; set; }
     public string username { get; set; }
     public string email { get; set; }
+
+    [JsonIgnore]
     public string password { get; set; }
 
     public NoteService Book { get; set; }

@@ -18,7 +18,7 @@ class NoteService : INoteService
         return noteBook;
     }
 
-    public List<NoteTask> getAllNotesOnFilter(bool? isCompleted = false, string? priority = "")
+    public List<NoteTask> getAllNotesOnFilter(bool? isCompleted, string? priority)
     {
 
         if (isCompleted != null && priority == null)
