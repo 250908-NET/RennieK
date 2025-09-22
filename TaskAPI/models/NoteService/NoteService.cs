@@ -5,6 +5,7 @@ using TaskAPI.models.NoteTask;
 
 class NoteService : INoteService
 {
+    // need to be updated from Json file
     public List<NoteTask> noteBook = new List<NoteTask>();
 
     public NoteService()
@@ -17,7 +18,7 @@ class NoteService : INoteService
         return noteBook;
     }
 
-    public List<NoteTask> getAllNotesOnFilter(bool? isCompleted = false, string? priority = "")
+    public List<NoteTask> getAllNotesOnFilter(bool? isCompleted, string? priority)
     {
 
         if (isCompleted != null && priority == null)
@@ -113,11 +114,11 @@ class NoteService : INoteService
     {
         return noteBook;
     }
-    public NoteTask getTaskByID(int id)
+    public NoteTask? getTaskByID(int id)
     {
         try
         {
-            NoteTask objbyId = noteBook.Find(objects => objects.id == id);
+            NoteTask? objbyId = noteBook.Find(objects => objects.id == id);
             return objbyId;
         }
         catch
