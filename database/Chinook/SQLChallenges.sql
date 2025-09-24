@@ -14,6 +14,7 @@ from "Customer"
 where
     "Country" != 'USA'
     -- List all customers from Brazil
+
 select *
 from "Customer"
 where
@@ -22,22 +23,45 @@ where
 
 -- Retrieve a list of all countries in billing addresses on invoices
 
+select "BillingCountry", "BillingAddress" from "Invoice"
+
 -- Retrieve how many invoices there were in 2009, and what was the sales total for that year?
 
+select sum("Total") from "Invoice" where year("InvoiceDate") = 2009
+
 -- (challenge: find the invoice count sales total for every year using one query)
+select "BillingCountry", COUNT("InvoiceDate"), sum("Total")
+from "Invoice"
 
 -- how many line items were there for invoice #37
 
 -- how many invoices per country? BillingCountry  # of invoices -
+select
+    "BillingCountry",
+    COUNT(*) as "Invoices per country"
+from "Invoice"
+GROUP BY
+    "BillingCountry"
 
 -- Retrieve the total sales per country, ordered by the highest total sales first.
-
--- JOINS CHALLENGES
--- Every Album by Artist
+select
+    "BillingCountry",
+    COUNT(*) as "Invoices per country"
+from "Invoice"
+GROUP BY
+    "BillingCountry"
+ORDER BY "Invoices per country" DESC
+    -- JOINS CHALLENGES
+    -- Every Album by Artist
 
 -- All songs of the rock genre
+select *
+from "Track"
+where
+    "GenreId" = 5
+    -- Show all invoices of customers from brazil (mailing address not billing)
 
--- Show all invoices of customers from brazil (mailing address not billing)
+select * from "Customer" where "Country" = 'Brazil'
 
 -- Show all invoices together with the name of the sales agent for each one
 
