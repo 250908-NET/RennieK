@@ -14,26 +14,28 @@ class RecipeService : IRecipieService
     {
         _recipeRepo = recipeRepo;
     }
-    public int removeIngredient(string oldname)
+    public Task<Recipe> removeIngredient(string oldname, Recipe recipe)
     {
-        int removeCount = recipe.RemoveAll(Ingredient => Ingredient.name == oldname);
-        return removeCount;
+        return _recipeRepo.removeIngrdientFromRecipeAsync(oldname, recipe);
 
 
     }
-    public Ingredient addIngredient(Ingredient newIngredient)
+    public Task<Recipe> addIngredient(Ingredient newIngredient, Recipe recipe)
     {
-        recipe.Add(newIngredient);
-        return newIngredient;
+        return _recipeRepo.addIngrdientToRecipeAsync(newIngredient, recipe);
+
     }
 
     public Task<Recipe> addRecipe(Recipe newRecipe)
     {
-        return _recipeRepo.AddAsync(newRecipe);
+        return _recipeRepo.addRecipeAsync(newRecipe);
     }
-
-    public List<Ingredient> showAllIngredients()
+    public Task<Recipe> removeRecipe(Recipe newRecipe)
     {
-        return recipe;
+        return _recipeRepo.removeRecipeAsync(newRecipe);
     }
+    // public List<Ingredient> showAllIngredients()
+    // {
+    //     return recipe;
+    // }
 }

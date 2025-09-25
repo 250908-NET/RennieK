@@ -1,7 +1,7 @@
 public class Recipe
 {
-    List<Ingredient> IngredientList { get; set; } = new();
     public int Id { get; set; }
+    public List<Ingredient> IngredientList { get; set; } = new();
     public string Name { get; set; } = string.Empty;
 
     // Recipie()

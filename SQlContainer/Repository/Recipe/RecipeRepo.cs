@@ -6,12 +6,26 @@ public class RecipeRepo
     {
         _context = context;
     }
-    public Task<List<Recipe>> GetAllAsync()
+    public Task<List<Recipe>> GetAllRecipeAsync()
+    {
+
+        throw new NotImplementedException();
+    }
+
+    public Task<Recipe> addRecipeAsync(Recipe newRecipe)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Recipe> AddAsync(Recipe newRecipe)
+    public Task<Recipe> removeRecipeAsync(Recipe newRecipe)
+    {
+        throw new NotImplementedException();
+    }
+    public Task<Recipe> addIngrdientToRecipeAsync(Ingredient ingredient, Recipe recipe)
+    {
+        throw new NotImplementedException();
+    }
+    public Task<Recipe> removeIngrdientFromRecipeAsync(string name, Recipe recipe)
     {
         throw new NotImplementedException();
     }

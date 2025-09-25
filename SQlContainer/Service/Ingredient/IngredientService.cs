@@ -17,15 +17,23 @@ class IngredientService : IIngredientService
     //     this.name = name;
     //     this.quantity = quantity;
     // }
+    private readonly IIngredientRepo _ingredientRepo;
 
-    public string addName(string name, Ingredient item)
+    public Task<Ingredient> addIngredient(Ingredient item)
     {
-        item.name = name;
-        return name;
+        return _ingredientRepo.addIngredientAsync(item);
     }
-    public float SetQuantity(float amount, Ingredient item)
+    public Task<Ingredient> removeIngredient(string oldname)
     {
-        item.quantity = amount;
-        return amount;
+        return _ingredientRepo.removeIngredientAsync(oldname);
     }
+    public Task<List<Ingredient>> GetAllIngrdients()
+    {
+        return _ingredientRepo.GetAllAsync();
+    }
+    public Task<List<Ingredient>> GetIngredientByName(string name)
+    {
+        return _ingredientRepo.GetAllAsync();
+    }
+
 }
