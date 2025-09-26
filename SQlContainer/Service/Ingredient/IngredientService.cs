@@ -18,10 +18,6 @@ class IngredientService : IIngredientService
     //     this.quantity = quantity;
     // }
     private readonly IIngredientRepo _ingredientRepo;
-    public IngredientService(IIngredientRepo repo)
-    {
-        _ingredientRepo = repo;
-    }
 
     public Task<Ingredient> addIngredient(Ingredient item)
     {
@@ -31,9 +27,9 @@ class IngredientService : IIngredientService
     {
         return _ingredientRepo.removeIngredientAsync(oldname);
     }
-    public async Task<List<Ingredient>> GetAllIngrdients()
+    public Task<List<Ingredient>> GetAllIngrdients()
     {
-        return await _ingredientRepo.GetAllAsync();
+        return _ingredientRepo.GetAllAsync();
     }
     public Task<List<Ingredient>> GetIngredientByName(string name)
     {

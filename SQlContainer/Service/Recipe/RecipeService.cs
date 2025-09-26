@@ -1,4 +1,4 @@
-class RecipeService : IRecipeService
+class RecipeService : IRecipieService
 {
     List<Ingredient> recipe = new List<Ingredient>();
 
@@ -13,16 +13,6 @@ class RecipeService : IRecipeService
     public RecipeService(IRecipeRepo recipeRepo)
     {
         _recipeRepo = recipeRepo;
-    }
-
-    public Task<List<Recipe>> GetAllRecipes()
-    {
-        return _recipeRepo.GetAllRecipeAsync();
-    }
-
-    public Task<List<Recipe>> GetRecipeByName()
-    {
-        return _recipeRepo.GetAllRecipeAsync();
     }
     public Task<Recipe> removeIngredient(string oldname, Recipe recipe)
     {
@@ -40,9 +30,9 @@ class RecipeService : IRecipeService
     {
         return _recipeRepo.addRecipeAsync(newRecipe);
     }
-    public Task<Recipe> removeRecipe(string recipeName)
+    public Task<Recipe> removeRecipe(Recipe newRecipe)
     {
-        return _recipeRepo.removeRecipeAsync(recipeName);
+        return _recipeRepo.removeRecipeAsync(newRecipe);
     }
     // public List<Ingredient> showAllIngredients()
     // {
