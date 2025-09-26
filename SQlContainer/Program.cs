@@ -5,9 +5,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-
+string connection = File.ReadAllText("connection.txt");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer("Server=localhost,1433;Database=wizardly_noyce;User Id=sa;Password=babadoie2&*(97349846457;TrustServerCertificate=True;"));
+    options.UseSqlServer(connection));
 builder.Services.AddScoped<IRecipeRepo, RecipeRepo>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
 
