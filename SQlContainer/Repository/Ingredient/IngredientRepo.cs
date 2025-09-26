@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 public class IngredientRepo : IIngredientRepo
 {
     private readonly AppDbContext _context;
@@ -5,22 +7,28 @@ public class IngredientRepo : IIngredientRepo
     {
         _context = context;
     }
-    public Task<List<Ingredient>> GetAllAsync()
+    public async Task<List<Ingredient>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await _context.Ingredients.Include(i => i.AssociatedRecipes).ToListAsync();
     }
 
-    public Task<Ingredient> removeIngredientAsync(string oldname)
+    public async Task<Ingredient> removeIngredientAsync(string oldname)
     {
-        throw new NotImplementedException();
+        var removedIngredient = await _context.Ingredients.FirstAsync(Ingredient => Ingredient.name == oldname);
+        _context.Ingredients.Remove(removedIngredient);
+        await _context.SaveChangesAsync();
+        return removedIngredient;
+
     }
 
-    public Task<Ingredient> addIngredientAsync(Ingredient item)
+    public async Task<Ingredient> addIngredientAsync(Ingredient item)
     {
-        throw new NotImplementedException();
+        await _context.Ingredients.AddAsync(item);
+        await _context.SaveChangesAsync();
+        return item;
     }
-    public Task<List<Ingredient>> GetIngredientByNameAsync(string name)
+    public async Task<List<Ingredient>> GetIngredientByNameAsync(string name)
     {
-        throw new NotImplementedException();
+        return await _context.Ingredients.Include(i => i.AssociatedRecipes).Where(ingredient => ingredient.name == name).ToListAsync();
     }
 }

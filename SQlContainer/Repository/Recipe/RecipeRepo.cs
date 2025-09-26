@@ -1,4 +1,6 @@
-public class RecipeRepo
+using Microsoft.EntityFrameworkCore;
+
+public class RecipeRepo : IRecipeRepo
 {
     private readonly AppDbContext _context;
 
@@ -6,24 +8,44 @@ public class RecipeRepo
     {
         _context = context;
     }
-    public Task<List<Recipe>> GetAllRecipeAsync()
+    public async Task<List<Recipe>> GetAllRecipeAsync()
     {
 
-        throw new NotImplementedException();
+        return await _context.Recipes.Include(r => r.IngredientList).ToListAsync();
     }
 
-    public Task<Recipe> addRecipeAsync(Recipe newRecipe)
+    public async Task<Recipe> addRecipeAsync(Recipe newRecipe)
     {
-        throw new NotImplementedException();
+        await _context.Recipes.AddAsync(newRecipe);
+        await _context.SaveChangesAsync();
+        return newRecipe;
     }
 
-    public Task<Recipe> removeRecipeAsync(Recipe newRecipe)
+    public async Task<Recipe> removeRecipeAsync(string name)
     {
-        throw new NotImplementedException();
+        var recipeToRemove = await _context.Recipes.FirstAsync(r => r.Name == name);
+        _context.Remove(recipeToRemove);
+        return recipeToRemove;
     }
-    public Task<Recipe> addIngrdientToRecipeAsync(Ingredient ingredient, Recipe recipe)
+    public async Task<Recipe> addIngrdientToRecipeAsync(Ingredient ingredient, Recipe recipe)
     {
-        throw new NotImplementedException();
+        var trackedRecipe = await _context.Recipes.Include(r => r.IngredientList).FirstOrDefaultAsync(r => r.Id == recipe.Id);
+
+        if (trackedRecipe == null)
+        {
+            throw new Exception("Not Found");
+        }
+        var trackedIngredient = await _context.Ingredients
+        .FirstOrDefaultAsync(i => i.Id == ingredient.Id);
+
+        if (trackedIngredient == null)
+        {
+            trackedIngredient = ingredient;
+            _context.Ingredients.Add(trackedIngredient);
+        }
+        trackedRecipe.IngredientList.Add(trackedIngredient);
+        await _context.SaveChangesAsync();
+        return trackedRecipe;
     }
     public Task<Recipe> removeIngrdientFromRecipeAsync(string name, Recipe recipe)
     {
