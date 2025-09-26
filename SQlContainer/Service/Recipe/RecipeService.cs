@@ -24,15 +24,15 @@ class RecipeService : IRecipeService
     {
         return _recipeRepo.GetAllRecipeAsync();
     }
-    public Task<Recipe> removeIngredient(string oldname, Recipe recipe)
+    public Task<Recipe> removeIngredient(string oldname, string recipename)
     {
-        return _recipeRepo.removeIngrdientFromRecipeAsync(oldname, recipe);
+        return _recipeRepo.removeIngrdientFromRecipeAsync(oldname, recipename);
 
 
     }
-    public Task<Recipe> addIngredient(Ingredient newIngredient, Recipe recipe)
+    public Task<Recipe> addIngredient(Ingredient newIngredient, string nameOfRecipe)
     {
-        return _recipeRepo.addIngrdientToRecipeAsync(newIngredient, recipe);
+        return _recipeRepo.addIngrdientToRecipeAsync(newIngredient, nameOfRecipe);
 
     }
 

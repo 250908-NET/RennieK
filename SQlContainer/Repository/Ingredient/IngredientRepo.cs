@@ -10,6 +10,8 @@ public class IngredientRepo : IIngredientRepo
     public async Task<List<Ingredient>> GetAllAsync()
     {
         return await _context.Ingredients.Include(i => i.AssociatedRecipes).ToListAsync();
+
+
     }
 
     public async Task<Ingredient> removeIngredientAsync(string oldname)

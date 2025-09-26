@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +14,20 @@ builder.Services.AddScoped<IRecipeService, RecipeService>();
 
 builder.Services.AddScoped<IIngredientRepo, IngredientRepo>();
 builder.Services.AddScoped<IIngredientService, IngredientService>();
-var app = builder.Build();
 
+// builder.Services.AddControllers()
+//     .AddJsonOptions(options =>
+//     {
+//         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+//     });
+
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+{
+    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
+
+var app = builder.Build();
+// app.MapControllers();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -65,12 +78,26 @@ app.MapGet("/cookbook/Recipe/{name}", async (string name, IRecipeService recipeS
 app.MapPost("/cookbook/Recipe/add", async (Recipe item, IRecipeService recipeService) =>
 {
     var Ingredient = await recipeService.addRecipe(item);
+    return Results.Ok(Ingredient);
 
 });
 
-app.MapDelete("/cookbook/Recipe/remove/{name}", async (string name, IRecipeService recipeService) =>
+app.MapPut("/cookbook/Recipe/update/{nameOfRecipe}", async (string nameOfRecipe, Ingredient ingredient, IRecipeService recipeService) =>
 {
-    var Ingredient = await recipeService.removeRecipe(name);
+    var recipe = await recipeService.addIngredient(ingredient, nameOfRecipe);
+    return Results.Ok(recipe);
+
+});
+app.MapDelete("/cookbook/Recipe/remove/{RecipeName}", async (string RecipeName, IRecipeService recipeService) =>
+{
+    var Ingredient = await recipeService.removeRecipe(RecipeName);
+    return Results.Ok(Ingredient);
+
+});
+app.MapPatch("/cookbook/Recipe/remove", async (RecipeDTO DTO, IRecipeService recipeService) =>
+{
+    var Ingredient = await recipeService.removeIngredient(DTO.Name, DTO.IngredientName);
+    return Results.Ok(Ingredient);
 
 });
 

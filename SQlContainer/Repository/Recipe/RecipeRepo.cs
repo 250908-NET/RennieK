@@ -25,18 +25,19 @@ public class RecipeRepo : IRecipeRepo
     {
         var recipeToRemove = await _context.Recipes.FirstAsync(r => r.Name == name);
         _context.Remove(recipeToRemove);
+        await _context.SaveChangesAsync();
         return recipeToRemove;
     }
-    public async Task<Recipe> addIngrdientToRecipeAsync(Ingredient ingredient, Recipe recipe)
+    public async Task<Recipe> addIngrdientToRecipeAsync(Ingredient ingredient, string nameOfRecipe)
     {
-        var trackedRecipe = await _context.Recipes.Include(r => r.IngredientList).FirstOrDefaultAsync(r => r.Id == recipe.Id);
+        var trackedRecipe = await _context.Recipes.Include(r => r.IngredientList).FirstOrDefaultAsync(r => r.Name == nameOfRecipe);
 
         if (trackedRecipe == null)
         {
             throw new Exception("Not Found");
         }
         var trackedIngredient = await _context.Ingredients
-        .FirstOrDefaultAsync(i => i.Id == ingredient.Id);
+        .FirstOrDefaultAsync(i => i.name == ingredient.name);
 
         if (trackedIngredient == null)
         {
@@ -47,8 +48,24 @@ public class RecipeRepo : IRecipeRepo
         await _context.SaveChangesAsync();
         return trackedRecipe;
     }
-    public Task<Recipe> removeIngrdientFromRecipeAsync(string name, Recipe recipe)
+    public async Task<Recipe> removeIngrdientFromRecipeAsync(string RecipeName, string ingredientName)
     {
-        throw new NotImplementedException();
+        var trackedRecipe = await _context.Recipes.Include(r => r.IngredientList).FirstOrDefaultAsync(r => r.Name == RecipeName);
+
+        if (trackedRecipe == null)
+        {
+            throw new Exception("Not Found");
+        }
+        var trackedIngredient = await _context.Ingredients
+        .FirstOrDefaultAsync(i => i.name == ingredientName);
+
+        if (trackedIngredient != null)
+        {
+            // trackedIngredient = ingredient;
+            _context.Ingredients.Remove(trackedIngredient);
+            trackedRecipe.IngredientList.Remove(trackedIngredient);
+            await _context.SaveChangesAsync();
+        }
+        return trackedRecipe;
     }
 }
